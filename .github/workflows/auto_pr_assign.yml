@@ -1,5 +1,8 @@
+
+# Automatically assign a pull request to its creator
 name: Assign PR
 
+# Trigger the workflow when a pull request is opened
 on:
   pull_request_target:
     types: [opened]
@@ -8,20 +11,20 @@ jobs:
   assign-author:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    
+
+    # Give permission to assign pull requests
     permissions:
       pull-requests: write
-      
+
     steps:
-      - name: 'Auto-assign PR to creator'
+      # Assign the PR to the person who created it
+      - name: Auto-assign PR to creator
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         with:
-        
           script: |
-            github.rest.issues.addAssignees({
+            await github.rest.issues.addAssignees({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               assignees: [context.payload.pull_request.user.login]
             })
-            
